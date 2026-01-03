@@ -1,0 +1,246 @@
+-- Adopt Me Script Mod Menu
+-- Create ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "AdoptMeModMenu"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- Main Frame (Menu Box)
+local mainFrame = Instance.new("Frame")
+mainFrame.Name = "MainFrame"
+mainFrame.Size = UDim2.new(0, 400, 0, 300)
+mainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
+mainFrame.BackgroundColor3 = Color3.fromRGB(255, 140, 0) -- Orange
+mainFrame.BorderSizePixel = 0
+mainFrame.Parent = screenGui
+
+-- Add rounded corners
+local corner = Instance.new("UICorner")
+corner.CornerRadius = UDim.new(0, 12)
+corner.Parent = mainFrame
+
+-- Add shadow/depth effect
+local shadow = Instance.new("Frame")
+shadow.Name = "Shadow"
+shadow.Size = UDim2.new(1, 6, 1, 6)
+shadow.Position = UDim2.new(0, -3, 0, 3)
+shadow.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+shadow.BackgroundTransparency = 0.7
+shadow.ZIndex = mainFrame.ZIndex - 1
+shadow.Parent = mainFrame
+
+local shadowCorner = Instance.new("UICorner")
+shadowCorner.CornerRadius = UDim.new(0, 12)
+shadowCorner.Parent = shadow
+
+-- Title Label
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Name = "Title"
+titleLabel.Size = UDim2.new(1, -40, 0, 50)
+titleLabel.Position = UDim2.new(0, 20, 0, 20)
+titleLabel.BackgroundTransparency = 1
+titleLabel.Text = "Adopt Me Script"
+titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleLabel.Font = Enum.Font.GothamBold
+titleLabel.TextSize = 28
+titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+titleLabel.Parent = mainFrame
+
+-- Loading Container
+local loadingContainer = Instance.new("Frame")
+loadingContainer.Name = "LoadingContainer"
+loadingContainer.Size = UDim2.new(1, -40, 0, 150)
+loadingContainer.Position = UDim2.new(0, 20, 0, 90)
+loadingContainer.BackgroundTransparency = 1
+loadingContainer.Parent = mainFrame
+
+-- Loading Text
+local loadingText = Instance.new("TextLabel")
+loadingText.Name = "LoadingText"
+loadingText.Size = UDim2.new(1, 0, 0, 30)
+loadingText.Position = UDim2.new(0, 0, 0, 0)
+loadingText.BackgroundTransparency = 1
+loadingText.Text = "Loading"
+loadingText.TextColor3 = Color3.fromRGB(255, 255, 255)
+loadingText.Font = Enum.Font.Gotham
+loadingText.TextSize = 20
+loadingText.Parent = loadingContainer
+
+-- Loading Bar Background
+local loadingBarBg = Instance.new("Frame")
+loadingBarBg.Name = "LoadingBarBg"
+loadingBarBg.Size = UDim2.new(1, 0, 0, 20)
+loadingBarBg.Position = UDim2.new(0, 0, 0, 50)
+loadingBarBg.BackgroundColor3 = Color3.fromRGB(200, 100, 0)
+loadingBarBg.BorderSizePixel = 0
+loadingBarBg.Parent = loadingContainer
+
+local barCorner = Instance.new("UICorner")
+barCorner.CornerRadius = UDim.new(0, 10)
+barCorner.Parent = loadingBarBg
+
+-- Loading Bar Fill
+local loadingBar = Instance.new("Frame")
+loadingBar.Name = "LoadingBar"
+loadingBar.Size = UDim2.new(0, 0, 1, 0)
+loadingBar.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+loadingBar.BorderSizePixel = 0
+loadingBar.Parent = loadingBarBg
+
+local fillCorner = Instance.new("UICorner")
+fillCorner.CornerRadius = UDim.new(0, 10)
+fillCorner.Parent = loadingBar
+
+-- Percentage Text
+local percentText = Instance.new("TextLabel")
+percentText.Name = "PercentText"
+percentText.Size = UDim2.new(1, 0, 0, 30)
+percentText.Position = UDim2.new(0, 0, 0, 85)
+percentText.BackgroundTransparency = 1
+percentText.Text = "0%"
+percentText.TextColor3 = Color3.fromRGB(255, 255, 255)
+percentText.Font = Enum.Font.GothamBold
+percentText.TextSize = 18
+percentText.Parent = loadingContainer
+
+-- Make it draggable
+local dragging = false
+local dragInput, mousePos, framePos
+
+mainFrame.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = true
+		mousePos = input.Position
+		framePos = mainFrame.Position
+	end
+end)
+
+mainFrame.InputChanged:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseMovement then
+		dragInput = input
+	end
+end)
+
+mainFrame.InputEnded:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = false
+	end
+end)
+
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+	if input == dragInput and dragging then
+		local delta = input.Position - mousePos
+		mainFrame.Position = UDim2.new(
+			framePos.X.Scale,
+			framePos.X.Offset + delta.X,
+			framePos.Y.Scale,
+			framePos.Y.Offset + delta.Y
+		)
+	end
+end)
+
+-- Close Button
+local closeButton = Instance.new("TextButton")
+closeButton.Name = "CloseButton"
+closeButton.Size = UDim2.new(0, 40, 0, 40)
+closeButton.Position = UDim2.new(1, -50, 0, 15)
+closeButton.BackgroundColor3 = Color3.fromRGB(200, 80, 0)
+closeButton.Text = "X"
+closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeButton.Font = Enum.Font.GothamBold
+closeButton.TextSize = 20
+closeButton.Parent = mainFrame
+
+local closeCorner = Instance.new("UICorner")
+closeCorner.CornerRadius = UDim.new(0, 8)
+closeCorner.Parent = closeButton
+
+closeButton.MouseButton1Click:Connect(function()
+	screenGui:Destroy()
+end)
+
+-- Make mobile friendly with better touch support
+mainFrame.Active = true
+mainFrame.Draggable = false -- We'll handle dragging manually for mobile
+
+local UserInputService = game:GetService("UserInputService")
+local touchEnabled = UserInputService.TouchEnabled
+
+-- Loading Animation (2 minutes = 120 seconds)
+local function animateLoading()
+	local totalTime = 120 -- 2 minutes in seconds
+	local increment = 1 -- Count by 1%
+	
+	for i = 0, 100, increment do
+		wait(totalTime / 100) -- Each 1% takes 1.2 seconds (120 seconds / 100)
+		loadingBar:TweenSize(
+			UDim2.new(i/100, 0, 1, 0),
+			Enum.EasingDirection.Out,
+			Enum.EasingStyle.Quad,
+			0.3,
+			true
+		)
+		percentText.Text = i .. "%"
+		
+		-- Animate loading text dots
+		local dots = math.floor(i / 5) % 4
+		loadingText.Text = "Loading" .. string.rep(".", dots)
+	end
+	
+	wait(0.5)
+	loadingText.Text = "Complete!"
+	percentText.Text = "100%"
+	wait(1)
+	
+	-- Hide loading
+	loadingContainer.Visible = false
+	
+	-- THE PRANK - Make screen laggy!
+	local prankActive = true
+	
+	-- Create lag effect
+	spawn(function()
+		while prankActive do
+			-- Randomly shake the screen
+			local camera = workspace.CurrentCamera
+			local originalCFrame = camera.CFrame
+			
+			for i = 1, 5 do
+				camera.CFrame = originalCFrame * CFrame.new(
+					math.random(-2, 2) / 10,
+					math.random(-2, 2) / 10,
+					0
+				)
+				wait(0.05)
+			end
+			camera.CFrame = originalCFrame
+			
+			-- Random freeze moments
+			if math.random(1, 3) == 1 then
+				wait(math.random(1, 3) / 10)
+			end
+			
+			wait(math.random(2, 5))
+		end
+	end)
+	
+	-- Show prank message
+	local prankLabel = Instance.new("TextLabel")
+	prankLabel.Size = UDim2.new(1, -40, 0, 150)
+	prankLabel.Position = UDim2.new(0, 20, 0, 80)
+	prankLabel.BackgroundTransparency = 1
+	prankLabel.Text = "Sorry script must be broken since it's not showing up, please re-execute the script"
+	prankLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	prankLabel.Font = Enum.Font.Gotham
+	prankLabel.TextSize = 16
+	prankLabel.TextWrapped = true
+	prankLabel.Parent = mainFrame
+	
+	-- Stop prank when closed
+	screenGui.AncestryChanged:Connect(function()
+		prankActive = false
+	end)
+end
+
+-- Start loading animation
+spawn(animateLoading)
